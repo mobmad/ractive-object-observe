@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ractive with Object.observe</title>
+	<script src="vendor/Ractive.min.js" type="text/javascript"></script>
+	<script src="ractive-object-observe.js" type="text/javascript"></script>
+</head>
+<body>
+	<pre><code>
+# Fire up dev tools and try:
+superheroes[0].name = "Wagner, Kurt";
+superheroes.push({ name: "Wolverine" });
+superheroes.length = 0;
+	</code></pre>
+
+	<div id="app"></div>
+
+	<script id='superherosTemplate' type='text/ractive'>
+		<h1>Superheroes</h1>
+		<ul id="superheroes">
+			{{#superheroes}}
+			<li>{{name}}</li>
+			{{/superheroes}}
+		</ul>
+	</script>
+
+	<script>
+	window.superheroes = [
+		{name: "Nightcrawler" },
+		{name: "Cyclops" },
+		{name: "Rogue" }
+	];
+
+	var view = new Ractive({
+		el: 'app',
+		template: "#superherosTemplate",
+		data: {superheroes: superheroes},
+		modifyArrays: false,
+		adaptors: [ 'ObjectObserve' ]
+	});
+	</script>
+</body>
+</html>
