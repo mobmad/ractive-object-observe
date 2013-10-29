@@ -14,4 +14,5 @@ By using Object.observe, we'll get notifications when an object change. This ren
 See [the demo](http://mobmad.github.io/ractive-object-observe/)
 
 ## Licence
-* MIT
+
+MIT
