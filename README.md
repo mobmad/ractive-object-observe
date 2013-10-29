@@ -11,7 +11,7 @@ By using Object.observe, we'll get notifications when an object change. This ren
 3. Restart Chrome
 
 ## Demo and usage
-See [demo/index.html](demo/index.html)
+See [the demo](http://mobmad.github.io/ractive-object-observe/)
 
 ## Licence
 * MIT
