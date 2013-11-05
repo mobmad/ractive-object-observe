@@ -3,12 +3,10 @@
     console.error("Object.observe not supported (or enabled) in your browser! If you're using Chrome, go to chrome://flags and 'Enable Experimental JavaScript'");
   }
 
-  var ObjectObserveWrapper = function (ractive, obj, keypath, prefix) {
-    var wrapper = this;
+  var ObjectObserveWrapper = function(ractive, obj, keypath, prefix) {
     this.value = obj;
     this.keypath = keypath;
-
-    Object.observe(this.value, function(changes) {
+    this.observeCallback = function(changes) {
       var keyPathsToUpdate = [];
 
       function scheduleKeyPathUpdate(keyPath) {
@@ -44,37 +42,39 @@
       keyPathsToUpdate.forEach(function(kp) {
         ractive.update(kp.keyPath);
       });
-    });
+    };
+
+    Object.observe(this.value, this.observeCallback);
   };
 
   ObjectObserveWrapper.prototype = {
     teardown: function() {
+      Object.unobserve(this.value, this.observeCallback);
     },
 
-    get: function () {
+    get: function() {
       return this.value;
     },
 
-    set: function ( keypath, value ) {
+    set: function(keypath, value) {
       this.value[keypath] = value;
     },
 
-    reset: function ( object ) {
+    reset: function() {
       this.value = {};
     }
-  }
+  };
 
   Ractive.adaptors.ObjectObserve = {
-    filter: function ( object ) {
-      return typeof object === "object" && !object._observed;
+    filter: function(object) {
+      return typeof object === "object";
     },
 
-    wrap: function ( ractive, object, keypath, prefix ) {
+    wrap: function(ractive, object, keypath, prefix) {
       if(ractive.modifyArrays) {
         console.error("Object.Observe incompatible with modifyArrays: true. Set to false and try again!");
         return null;
       } else {
-        object._observed = true;
         return new ObjectObserveWrapper(ractive, object, keypath, prefix);
       }
     }
